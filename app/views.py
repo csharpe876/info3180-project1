@@ -81,7 +81,11 @@ def create_property():
             title=form.title.data,
             description=form.description.data,
             price=form.price.data,
-            photo=filename
+            photo=filename,
+            bedrooms=form.bedrooms.data,
+            bathrooms=form.bathrooms.data,
+            location=form.location.data,
+            property_type=form.property_type.data
         )
         db.session.add(property)
         db.session.commit()
