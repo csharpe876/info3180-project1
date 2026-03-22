@@ -6,7 +6,11 @@ This file contains the routes for your application.
 """
 
 from app import app
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
+from app.forms import PropertyForm
+from app.models import Property, db
+import os
+from werkzeug.utils import secure_filename
 
 
 ###
@@ -62,21 +66,42 @@ def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
 
-@app.route('/properties/create', methods=['POST'])
+
+# Route for displaying and submitting the property form
+@app.route('/properties/create', methods=['GET', 'POST'])
 def create_property():
-    """Create a new property."""
-    # Your code to handle property creation goes here
-    return "Property created successfully"
+    form = PropertyForm()
+    if form.validate_on_submit():
+        photo = form.photo.data
+        filename = secure_filename(photo.filename)
+        photo_path = os.path.join('app', 'static', 'uploads', filename)
+        os.makedirs(os.path.dirname(photo_path), exist_ok=True)
+        photo.save(photo_path)
+        property = Property(
+            title=form.title.data,
+            description=form.description.data,
+            price=form.price.data,
+            photo=filename
+        )
+        db.session.add(property)
+        db.session.commit()
+        flash('Property created successfully!', 'success')
+        return redirect(url_for('list_properties'))
+    else:
+        if request.method == 'POST':
+            flash_errors(form)
+    return render_template('create_property.html', form=form)
 
 
 @app.route('/properties', methods=['GET'])
 def list_properties():
     """List all properties."""
-    # Your code to handle listing properties goes here
-    return "List of properties"
+    properties = Property.query.all()
+    return render_template('properties.html', properties=properties)
+
 
 @app.route('/properties/<int:property_id>', methods=['GET'])
 def view_property(property_id):
     """View a specific property."""
-    # Your code to handle viewing a specific property goes here
-    return f"Details of property with ID: {property_id}"
+    property = Property.query.get_or_404(property_id)
+    return render_template('view_property.html', property=property)
