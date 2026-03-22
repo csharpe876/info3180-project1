@@ -22,7 +22,7 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Carl Sharpe")
 
 
 ###
@@ -61,3 +61,22 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
+
+@app.route('/properties/create', methods=['POST'])
+def create_property():
+    """Create a new property."""
+    # Your code to handle property creation goes here
+    return "Property created successfully"
+
+
+@app.route('/properties', methods=['GET'])
+def list_properties():
+    """List all properties."""
+    # Your code to handle listing properties goes here
+    return "List of properties"
+
+@app.route('/properties/<int:property_id>', methods=['GET'])
+def view_property(property_id):
+    """View a specific property."""
+    # Your code to handle viewing a specific property goes here
+    return f"Details of property with ID: {property_id}"
