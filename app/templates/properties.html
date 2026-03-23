@@ -1,116 +1,51 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="container mt-5">
-    <h2>Properties</h2>
-    <div class="row">
-        {% for property in properties %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{{ url_for('static', filename='uploads/' ~ property.photo) }}" class="card-img-top" alt="{{ property.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ property.title }}</h5>
-                    <p class="card-text">Location: {{ property.location }}</p>
-                    <p class="card-text">Bedrooms: {{ property.bedrooms }}</p>
-                    <p class="card-text">Bathrooms: {{ property.bathrooms }}</p>
-                    <p class="card-text">Type: {{ property.property_type }}</p>
-                    <p class="card-text">Price: ${{ property.price }}</p>
-                    <a href="{{ url_for('view_property', property_id=property.id) }}" class="btn btn-primary">View Details</a>
-                </div>
+{% block main %}
+<div class="py-4">
+  <h2 class="fw-bold mb-4">Properties</h2>
+
+  {% if properties %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for prop in properties %}
+        <div class="col">
+          <div class="card h-100 shadow-sm border-0">
+            <img
+              src="{{ url_for('static', filename='uploads/' + prop.photo) }}"
+              class="card-img-top"
+              alt="{{ prop.title }}"
+              style="height: 200px; object-fit: cover;"
+              onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'"
+            >
+            <div class="card-body">
+              <h5 class="card-title fw-semibold">{{ prop.title }}</h5>
+              <p class="text-muted small mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-geo-alt me-1" viewBox="0 0 16 16">
+                  <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94"/>
+                  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                  <circle cx="8" cy="6" r="1.5"/>
+                </svg>
+                {{ prop.location }}
+              </p>
+              <span class="badge text-white" style="background-color: #1abc9c; font-size: 0.85rem;">
+                ${{ '{:,.0f}'.format(prop.price) }}
+              </span>
             </div>
+            <div class="card-footer border-0 p-0">
+              <a href="{{ url_for('property_detail', propertyid=prop.id) }}"
+                 class="btn w-100 text-white rounded-0 rounded-bottom"
+                 style="background-color: #1abc9c;">
+                View Property
+              </a>
+            </div>
+          </div>
         </div>
-        {% endfor %}
+      {% endfor %}
     </div>
-</div>
-{% endblock %}
-                        {{ form.bathrooms.label }}
-                        {% if form.bathrooms.errors %}
-                            {{ form.bathrooms(class="form-control is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.bathrooms.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.bathrooms(class="form-control") }}
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form.property_type.label }}
-                    {% if form.property_type.errors %}
-                        {{ form.property_type(class="form-control is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.property_type.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.property_type(class="form-control") }}
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    {{ form.location.label }}
-                    {% if form.location.errors %}
-                        {{ form.location(class="form-control is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.location.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.location(class="form-control") }}
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    {{ form.price.label }}
-                    {% if form.price.errors %}
-                        {{ form.price(class="form-control is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.price.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.price(class="form-control") }}
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    {{ form.description.label }}
-                    {% if form.description.errors %}
-                        {{ form.description(class="form-control is-invalid", rows="4") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.description.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.description(class="form-control", rows="4") }}
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    {{ form.photo.label }}
-                    {% if form.photo.errors %}
-                        {{ form.photo(class="form-control is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.photo.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.photo(class="form-control") }}
-                    {% endif %}
-                </div>
-
-                <button type="submit" class="btn btn-primary">Add Property</button>
-                <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-            </form>
-        </div>
+  {% else %}
+    <div class="text-center text-muted py-5">
+      <p class="fs-5">No properties listed yet.</p>
+      <a href="{{ url_for('create_property') }}" class="btn text-white" style="background-color: #1abc9c;">Add the First Property</a>
     </div>
+  {% endif %}
 </div>
 {% endblock %}

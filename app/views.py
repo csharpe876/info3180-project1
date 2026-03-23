@@ -70,42 +70,51 @@ def page_not_found(error):
 # Route for displaying and submitting the property form
 @app.route('/properties/create', methods=['GET', 'POST'])
 def create_property():
+    """Display form to add a new property and handle submission."""
     form = PropertyForm()
+
     if form.validate_on_submit():
-        photo = form.photo.data
-        filename = secure_filename(photo.filename)
-        photo_path = os.path.join('app', 'static', 'uploads', filename)
-        os.makedirs(os.path.dirname(photo_path), exist_ok=True)
-        photo.save(photo_path)
-        property = Property(
+        # Handle file upload
+        file = form.photo.data
+        filename = secure_filename(file.filename)
+
+        # Ensure the upload folder exists and save the file
+        upload_folder = app.config['UPLOAD_FOLDER']
+        os.makedirs(upload_folder, exist_ok=True)
+        file.save(os.path.join(upload_folder, filename))
+
+        #Create a new Property and save to DB
+        new_property = Property(
             title=form.title.data,
             description=form.description.data,
-            price=form.price.data,
-            photo=filename,
             bedrooms=form.bedrooms.data,
             bathrooms=form.bathrooms.data,
             location=form.location.data,
-            property_type=form.property_type.data
+            price=form.price.data,
+            property_type=form.property_type.data,
+            photo=filename
         )
-        db.session.add(property)
+
+        db.session.add(new_property)
         db.session.commit()
-        flash('Property created successfully!', 'success')
-        return redirect(url_for('list_properties'))
+
+        flash('Property added successfully!', 'success')
+        return redirect(url_for('properties'))
     else:
-        if request.method == 'POST':
-            flash_errors(form)
+        flash_errors(form)
+
     return render_template('create_property.html', form=form)
 
 
 @app.route('/properties', methods=['GET'])
-def list_properties():
-    """List all properties."""
-    properties = Property.query.all()
-    return render_template('properties.html', properties=properties)
+def properties():
+    """Display a list of all properties."""
+    all_properties = Property.query.all()
+    return render_template('properties.html', properties=all_properties)
 
 
 @app.route('/properties/<int:property_id>', methods=['GET'])
-def view_property(property_id):
-    """View a specific property."""
-    property = Property.query.get_or_404(property_id)
-    return render_template('view_property.html', property=property)
+def property_view(propertyid):
+    """Display details of a single property by its ID."""
+    property = Property.query.get_or_404(propertyid)
+    return render_template('property_detail.html', property=property)

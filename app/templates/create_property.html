@@ -1,12 +1,83 @@
-{% extends 'base.html' %}
-{% block content %}
-  <h2>Create Property</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    <div>{{ form.title.label }} {{ form.title(size=32) }}</div>
-    <div>{{ form.description.label }} {{ form.description(rows=4, cols=40) }}</div>
-    <div>{{ form.price.label }} {{ form.price(step="0.01") }}</div>
-    <div>{{ form.photo.label }} {{ form.photo() }}</div>
-    <button type="submit">Create Property</button>
-  </form>
+{% extends "base.html" %}
+
+{% block main %}
+<div class="py-4">
+  <h2 class="fw-bold mb-4">Add New Property</h2>
+
+  <div class="card shadow-sm" style="max-width: 560px;">
+    <div class="card-body p-4">
+      <form method="POST" enctype="multipart/form-data" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.title.label(class="form-label fw-semibold") }}
+          {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else "")) }}
+          {% for error in form.title.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.description.label(class="form-label fw-semibold") }}
+          {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows=3) }}
+          {% for error in form.description.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="row mb-3">
+          <div class="col">
+            {{ form.bedrooms.label(class="form-label fw-semibold") }}
+            {{ form.bedrooms(class="form-control" + (" is-invalid" if form.bedrooms.errors else "")) }}
+            {% for error in form.bedrooms.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="col">
+            {{ form.bathrooms.label(class="form-label fw-semibold") }}
+            {{ form.bathrooms(class="form-control" + (" is-invalid" if form.bathrooms.errors else "")) }}
+            {% for error in form.bathrooms.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col">
+            {{ form.price.label(class="form-label fw-semibold") }}
+            {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else "")) }}
+            {% for error in form.price.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="col">
+            {{ form.property_type.label(class="form-label fw-semibold") }}
+            {{ form.property_type(class="form-select" + (" is-invalid" if form.property_type.errors else "")) }}
+            {% for error in form.property_type.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.location.label(class="form-label fw-semibold") }}
+          {{ form.location(class="form-control" + (" is-invalid" if form.location.errors else "")) }}
+          {% for error in form.location.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-4">
+          {{ form.photo.label(class="form-label fw-semibold") }}
+          {{ form.photo(class="form-control" + (" is-invalid" if form.photo.errors else "")) }}
+          {% for error in form.photo.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn text-white" style="background-color: #1abc9c;">Add Property</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
