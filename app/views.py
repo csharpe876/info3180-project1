@@ -114,7 +114,8 @@ def properties():
 
 
 @app.route('/properties/<int:property_id>', methods=['GET'])
-def property_view(propertyid):
+def property_detail(property_id):
     """Display details of a single property by its ID."""
-    property = Property.query.get_or_404(propertyid)
-    return render_template('property_detail.html', property=property)
+    prop = Property.query.get_or_404(property_id)
+    return render_template('property_detail.html', property=prop)
+    
