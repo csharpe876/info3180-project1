@@ -52,9 +52,16 @@
             {{ property.location }}
           </p>
 
-          <a href="mailto:realtor@project1.com" class="btn text-white" style="background-color: #1abc9c;">
-            Email Realtor
-          </a>
+          <div class="d-flex gap-2 mt-3">
+            <a href="mailto:realtor@project1.com" class="btn text-white w-100" style="background-color: #1abc9c;">
+              Email Realtor
+            </a>
+            <form action="{{ url_for('delete_property', property_id=property.id) }}" method="POST" class="w-100" style="display:inline;">
+              <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to remove this property from the listing?');">
+                Remove Listing
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

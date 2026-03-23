@@ -118,4 +118,12 @@ def property_detail(property_id):
     """Display details of a single property by its ID."""
     prop = Property.query.get_or_404(property_id)
     return render_template('property_detail.html', property=prop)
-    
+
+
+@app.route('/properties/delete/<int:property_id>', methods=['POST'])
+def delete_property(property_id):
+    prop = Property.query.get_or_404(property_id)
+    db.session.delete(prop)
+    db.session.commit()
+    flash('Property deleted successfully!', 'success')
+    return redirect(url_for('properties'))
